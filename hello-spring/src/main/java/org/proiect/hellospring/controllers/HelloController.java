@@ -44,14 +44,14 @@ public class HelloController {
     }
 
     // !!!!!!!!!!!!!!!!!! da cv eroare
-    @GetMapping("form") // /hello/form
+    @GetMapping("/form") // /hello/form
     //@ResponseBody
     public String helloForm() {
         return "<html>" +
                 "<body>" +
                 // // by default, the form o sa aiba Get request
                 // "<form action='hello'>" + // submit a request to /hello
-                "<form action='hello' method='post'>" + // post request
+                "<form action='/hello' method='post'>" + // post request
                 "<input type='text' name='name'>" + // o sa refoloseasca helloWithQueryParam cred
                 "<input type='submit' value='Greet me!'>" +
                 "</form>" +
