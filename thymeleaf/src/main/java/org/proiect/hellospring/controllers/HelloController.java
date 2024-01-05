@@ -1,62 +1,45 @@
 package org.proiect.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-// toate controllere o sa aiba controller annotations
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
-@ResponseBody // in loc sa pun la fiecare metoda separat
-@RequestMapping("hello")
 public class HelloController {
 
-    // static responses
-
-    /*
-    // @GetMapping // handles simple Get requests
-    @GetMapping("hello") // merge doar pe http://localhost:8080/hello
-    @ResponseBody // tells spring boot that this method will return a static plain text response
-    public String hello() {
-        return "Hello, Spring!";
-    }
-     */
-
-    @GetMapping("goodbye") // mergea initial doar pe http://localhost:8080/goodbye dar cu @ReqMap(hello) acuma ii /hello/goodbye
-    //@ResponseBody
-    public String goodbye() {
-        return "Goodbye, Spring!";
-    }
-
-    // handles request of the form /hello?name=Proiect
-    // folosesc valoarea lui 'name' as a parameter
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}) // accepts both get and post requests
-    // pot sa verific daca am GET sau POST request cu 'Inspect element > Network' cand is pe http://localhost:8080/form si dau dupa pe buton
-    //@ResponseBody
-    public String helloWithQueryParam(@RequestParam String name) {
-        return "Hello, " + name + "!";
-    }
-
-    // handles request of the form /hello/Proiect
-    // ex: localhost:8080/hello/java1514
-    @GetMapping("{name}") // acuma ii /hello/{name}
-    //@ResponseBody
-    public String helloWithPathParam(@PathVariable String name) {
-        return "Hello, " + name + "!";
-    }
-
-    // !!!!!!!!!!!!!!!!!! da cv eroare
-    @GetMapping("/form") // /hello/form
-    //@ResponseBody
+    @GetMapping("form")
+    //@ResponseBody // - cand spring vede numa un html, cauta fisier in template-uri. mereu face asa, exceptie cu ResponseBody; numa atunci nu cauta
     public String helloForm() {
-        return "<html>" +
-                "<body>" +
-                // // by default, the form o sa aiba Get request
-                // "<form action='hello'>" + // submit a request to /hello
-                "<form action='/hello' method='post'>" + // post request
-                "<input type='text' name='name'>" + // o sa refoloseasca helloWithQueryParam cred
-                "<input type='submit' value='Greet me!'>" +
-                "</form>" +
-                "</body>" +
-                "</html>";
+        return "form"; // form.html; nu are nevoie de html
+    }
+
+    // http://localhost:8080/hello?name=nume
+    @RequestMapping(value = "hello", method = {RequestMethod.GET, RequestMethod.POST}) // pot sa verific daca am GET sau POST request cu 'Inspect element > Network' cand is pe http://localhost:8080/form si dau dupa pe buton
+    public String hello(@RequestParam String name, Model model) { // clasa to pass data btw controller and view
+        String theGreeting = "serus " + name;
+        model.addAttribute("greeting", theGreeting); // primu arg ii parametru dat in html
+        return "hello"; // .html
+    }
+
+    // /hello/nume
+    @GetMapping("hello/{name}")
+    public String helloAgain(@PathVariable String name, Model model) {
+        String theGreeting = "salut " + name;
+        model.addAttribute("greeting", theGreeting);
+        return "hello";
+    }
+
+    @GetMapping("hello-names")
+    public String helloNames(Model model) {
+        List<String> names = new ArrayList<>();
+        names.add("Nume 1");
+        names.add("Nume 2");
+        names.add("Nume 3");
+        model.addAttribute("names", names);
+        return "hello-list";
     }
 
 }
