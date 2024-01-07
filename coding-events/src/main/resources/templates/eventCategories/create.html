@@ -10,7 +10,8 @@
         <label>Name
             <input th:field="${eventCategory.name}" class="form-control">
         </label>
-        <span th:errors="${eventCategory.name}" class="error"></span>
+        <!--span th:errors="${eventCategory.name}" class="error"></span-->
+        <p class="error" th:errors="${eventCategory.name}"></p>
     </div>
     <input type="submit" value="Create" class="btn btn-primary">
 </form>

@@ -1,8 +1,8 @@
 package com.example.codingevents.controllers;
 
-import com.example.codingevents.data.EventCategoryRepository;
 import com.example.codingevents.data.EventRepository;
 import com.example.codingevents.models.Event;
+import com.example.codingevents.models.EventType;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,9 +19,6 @@ public class EventController {
 
     // findAll, save, findById - is metode pe care le putem folosi pt ca is implementate in CrudRepository interface, care ii extinsa de EventRepository
 
-    @Autowired
-    private EventCategoryRepository eventCategoryRepository;
-
     @GetMapping
     public String displayAllEvents(Model model) {
         model.addAttribute("title", "All Events");
@@ -34,10 +31,13 @@ public class EventController {
     public String displayCreateEventForm(Model model) {
         model.addAttribute("title", "Create event");
         model.addAttribute(new Event());
-        model.addAttribute("categories", eventCategoryRepository.findAll());
+        model.addAttribute("types", EventType.values());
         return "events/create";
     }
 
+
+    // Model binding; when spring tries to call this method when the post req is made to this route,
+    // it'll look in the req data and look for fields that'll match up w the fields of the event class
     @PostMapping("create")
     public String processCreateEventForm(@ModelAttribute @Valid Event newEvent,
                                          Errors errors, Model model) {
@@ -53,6 +53,7 @@ public class EventController {
     @GetMapping("delete")
     public String displayDeleteEventForm(Model model) {
         model.addAttribute("title", "Delete Event");
+        //model.addAttribute("events", EventData.getAllEvents());
         model.addAttribute("events", eventRepository.findAll());
         return "events/delete";
     }
@@ -62,6 +63,7 @@ public class EventController {
 
         if(eventIds != null) {
             for (int id : eventIds) {
+                //EventData.remove(id);
                 eventRepository.deleteById(id);
             }
         }

@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
 
-
+/**
+ * Created by Chris Bay
+ */
 @Controller
 @RequestMapping("eventCategories")
 public class EventCategoryController {

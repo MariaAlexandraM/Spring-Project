@@ -1,38 +1,35 @@
 package com.example.codingevents.models;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-public class Event extends AbstractEntity  {
+public class Event extends AbstractEntity{
 
-    @NotBlank(message = "Name is required")
-    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
+    @NotBlank(message = "Name field must not be blank")
+    @Size(min = 3, max = 500, message = "Name size must be between 3 and 50 characters")
     private String name;
 
-    @Size(max = 500, message = "Description too long!")
+    @Size(max = 500, message = "Description size must be under 500 characters")
     private String description;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email. Try again.")
+    @NotBlank(message = "Email field must not be blank")
+    @Email(message = "Invalid email")
     private String contactEmail;
 
-    @ManyToOne
-    @NotNull(message = "Category is required")
-    private EventCategory eventCategory;
+    private EventType type;
 
-    public Event(String name, String description, String contactEmail, EventCategory eventCategory) {
+    public Event() { }
+
+    public Event(String name, String description, String contactEmail, EventType type) {
         this.name = name;
         this.description = description;
         this.contactEmail = contactEmail;
-        this.eventCategory = eventCategory;
-    }
+        this.type = type;
 
-    public Event() {}
+    }
 
     public String getName() {
         return name;
@@ -58,17 +55,17 @@ public class Event extends AbstractEntity  {
         this.contactEmail = contactEmail;
     }
 
-    public EventCategory getEventCategory() {
-        return eventCategory;
+    public EventType getType() {
+        return type;
     }
 
-    public void setEventCategory(EventCategory eventCategory) {
-        this.eventCategory = eventCategory;
+    public void setType(EventType type) {
+        this.type = type;
     }
 
     @Override
     public String toString() {
         return //id +
-                ". " + name + "(" + eventCategory +", contact: "+ contactEmail + "): " + description;
+                ". " + name + "(" + type +", contact: "+ contactEmail + "): " + description;
     }
 }
