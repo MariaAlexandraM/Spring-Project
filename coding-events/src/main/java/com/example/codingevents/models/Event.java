@@ -1,9 +1,13 @@
 package com.example.codingevents.models;
 
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.Email;
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Event extends AbstractEntity{
@@ -12,22 +16,24 @@ public class Event extends AbstractEntity{
     @Size(min = 3, max = 500, message = "Name size must be between 3 and 50 characters")
     private String name;
 
-    @Size(max = 500, message = "Description size must be under 500 characters")
-    private String description;
+    // OneToOne = one event has one eventDetails
+    @OneToOne(cascade = CascadeType.ALL) // if we delete an event, we delete the event details as well
+    @Valid
+    @NotNull(message = "Event details are required")
+    private EventDetails eventDetails;
 
-    @NotBlank(message = "Email field must not be blank")
-    @Email(message = "Invalid email")
-    private String contactEmail;
+    @ManyToOne // many events can have the same category
+    @NotNull(message = "Category is required")
+    private EventCategory eventCategory;
 
-    private EventType type;
+    @ManyToMany
+    private final List<Tag> tags = new ArrayList<>();
 
     public Event() { }
 
-    public Event(String name, String description, String contactEmail, EventType type) {
+    public Event(String name, EventCategory eventCategory) {
         this.name = name;
-        this.description = description;
-        this.contactEmail = contactEmail;
-        this.type = type;
+        this.eventCategory = eventCategory;
 
     }
 
@@ -39,33 +45,32 @@ public class Event extends AbstractEntity{
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public EventCategory getEventCategory() {
+        return eventCategory;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setEventCategory(EventCategory eventCategory) {
+        this.eventCategory = eventCategory;
     }
 
-    public String getContactEmail() {
-        return contactEmail;
+    public EventDetails getEventDetails() {
+        return eventDetails;
     }
 
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
+    public void setEventDetails(EventDetails eventDetails) {
+        this.eventDetails = eventDetails;
     }
 
-    public EventType getType() {
-        return type;
+    public List<Tag> getTags() {
+        return tags;
     }
 
-    public void setType(EventType type) {
-        this.type = type;
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
     }
 
     @Override
     public String toString() {
-        return //id +
-                ". " + name + "(" + type +", contact: "+ contactEmail + "): " + description;
+        return "Event " + name;
     }
 }
